@@ -147,6 +147,53 @@ product-revenue-analytics/
 
 ---
 
+
+## ⚠️ Analytical Integrity & Pipeline Refactor
+
+During the BI integration phase, aggregation inconsistencies were identified when cohort-level datasets were consumed directly by Power BI.  
+Specifically, revenue overcounting emerged due to improper aggregation granularity across cohort dimensions.
+
+To address this, the entire cohort pipeline was intentionally refactored.
+
+Key corrective actions included:
+
+- Rebuilding the cohort datasets from a clean transactional dataframe
+- Enforcing **strict cohort-level granularity** for all exported datasets
+- Separating **acquisition-month revenue** from lifecycle revenue to avoid KPI inflation
+- Eliminating any risk of Cartesian product effects during BI consumption
+
+As a result, all cohort retention, revenue, and LTV metrics are now analytically consistent and BI-safe.
+
+---
+
+## 🧮 Revenue & LTV Methodology
+
+- Retention and revenue metrics are computed exclusively at the cohort level in Python
+- Global KPIs (e.g., Total Revenue, Average LTV) are intentionally derived using acquisition-month logic
+- Lifetime Value (LTV) is calculated as observed cohort revenue divided by cohort size
+- Final executive KPIs are computed dynamically in Power BI using DAX, avoiding unnecessary data duplication
+
+This approach ensures:
+- analytical accuracy  
+- transparent business logic  
+- scalable and maintainable BI models  
+
+---
+
+## 📦 BI-Ready Outputs
+
+All analytical outputs are exported using **relative paths**, ensuring portability and reproducibility across environments.
+
+Prepared datasets include:
+
+- `cohort_retention.csv`
+- `cohort_revenue.csv`
+- `ltv_cohort.csv`
+
+These datasets are designed to minimize complex calculations in BI tools and maintain a clean separation between data preparation and visualization layers.
+
+---
+
 🚀 Next Steps
 
 Build an interactive Power BI dashboard to:
