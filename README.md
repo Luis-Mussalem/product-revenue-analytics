@@ -148,58 +148,77 @@ product-revenue-analytics/
 ---
 
 
-## ⚠️ Analytical Integrity & Pipeline Refactor
+# ⚠️ Analytical Integrity Refactor
 
-During the BI integration phase, aggregation inconsistencies were identified when cohort-level datasets were consumed directly by Power BI.  
-Specifically, revenue overcounting emerged due to improper aggregation granularity across cohort dimensions.
+During BI integration, aggregation inconsistencies were identified:
 
-To address this, the entire cohort pipeline was intentionally refactored.
+- Revenue overcounting
+- Many-to-many joins
+- Inflated KPIs
 
-Key corrective actions included:
+Pipeline was rebuilt with:
 
-- Rebuilding the cohort datasets from a clean transactional dataframe
-- Enforcing **strict cohort-level granularity** for all exported datasets
-- Separating **acquisition-month revenue** from lifecycle revenue to avoid KPI inflation
-- Eliminating any risk of Cartesian product effects during BI consumption
-
-As a result, all cohort retention, revenue, and LTV metrics are now analytically consistent and BI-safe.
+- Strict cohort granularity
+- Clean aggregation layers
+- BI-safe exports
 
 ---
 
-## 🧮 Revenue & LTV Methodology
+# 📦 BI-Ready Outputs
 
-- Retention and revenue metrics are computed exclusively at the cohort level in Python
-- Global KPIs (e.g., Total Revenue, Average LTV) are intentionally derived using acquisition-month logic
-- Lifetime Value (LTV) is calculated as observed cohort revenue divided by cohort size
-- Final executive KPIs are computed dynamically in Power BI using DAX, avoiding unnecessary data duplication
+Located in:
 
-This approach ensures:
-- analytical accuracy  
-- transparent business logic  
-- scalable and maintainable BI models  
+data/processed/
 
----
+yaml
+Copiar código
 
-## 📦 BI-Ready Outputs
+Files:
 
-All analytical outputs are exported using **relative paths**, ensuring portability and reproducibility across environments.
-
-Prepared datasets include:
-
-- `cohort_retention.csv`
-- `cohort_revenue.csv`
-- `ltv_cohort.csv`
-
-These datasets are designed to minimize complex calculations in BI tools and maintain a clean separation between data preparation and visualization layers.
+- cohort_retention.csv
+- cohort_revenue.csv
+- ltv_cohort.csv
 
 ---
 
-🚀 Next Steps
+# 📊 Power BI Dashboard
 
-Build an interactive Power BI dashboard to:
+## Executive KPIs
+- Total Revenue
+- Total Customers
+- Average LTV
+- Average Retention
 
-Explore retention and revenue cohorts visually
+## Analytical Visuals
 
-Track KPIs such as active customers, revenue retention, and LTV
+### Retention Heatmap
+Customer retention decay by cohort lifecycle.
 
-Enable executive-level storytelling and decision support
+### Revenue Heatmap
+Revenue concentration by cohort and lifecycle stage.
+
+### Cumulative Revenue Curve
+Revenue accumulation over time by cohort.
+
+---
+
+# 🧠 Architectural Design
+
+Separation of responsibilities:
+
+| Layer | Tool | Responsibility |
+|------|------|----------------|
+| ETL | Python | Data cleaning & cohort logic |
+| Metrics | Python | Retention & LTV |
+| KPIs | DAX | Executive aggregation |
+| Visualization | Power BI | Storytelling |
+
+Ensures scalability and analytical integrity.
+
+
+---
+# 🚀 Next Steps
+
+- Add executive insights narrative
+- Publish dashboard screenshots
+- Deploy portfolio case study
